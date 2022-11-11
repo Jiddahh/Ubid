@@ -39,7 +39,7 @@ class Bid(models.Model):
         return f"{self.title}, {self.price} bid by {self.user}"
 
 class Comments(models.Model):
-    comment = models.CharField(max_length=250)
+    comment = models.TextField(max_length=250)
     user_commented = models.CharField(max_length=64)
     listing = models.CharField(max_length=64)
     user_listing = models.CharField(max_length=64)

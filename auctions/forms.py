@@ -20,3 +20,8 @@ class CheckForm(ModelForm):
     class Meta:
         model = Watchlists
         exclude = ['title', 'user']
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comments
+        fields = ['comment']

@@ -97,12 +97,13 @@ def create_listing(request):
 
 @login_required
 def listing(request, title):
+    commentform = CommentForm()
     checkbox = CheckForm()
     form = BidForm()
 
-    listing = Listing.objects.all().filter(title=title).first()
-    title = listing.title
-    user = listing.user
+    # title = request.GET.get('title', '')
+    listing_object = Listing.objects.all().filter(title=title).first()
+    user = listing_object.user
 
     if request.user.is_authenticated:
         username = request.user.get_username()
@@ -132,18 +133,20 @@ def listing(request, title):
                 return render(request, "auctions/listing.html", {
                         "message": "Your bid has been placed succesfully",
                         "form": form,
-                        "listing": listing,
+                        "listing": listing_object,
+                        "commentform": commentform,
                         "checkbox": checkbox
                     })
             else:
                 max_bid = max(bids)
-                if price >= listing.price and price > max_bid:
+                if price >= listing_object.price and price > max_bid:
                     bid = bidform.save()
                     return render(request, "auctions/listing.html", {
                         "message": "Bid price must be equal or greater than starting price and higher than highest bid",
                         "form": form,
-                        "listing": listing,
+                        "listing": listing_object,
                         "checkbox": checkbox,
+                        "commentform": commentform,
                         "max_bid": max_bid
 
                     })
@@ -151,30 +154,32 @@ def listing(request, title):
                     return render(request, "auctions/listing.html", {
                         "message": "Bid price must be equal or greater than starting price and higher than highest bid",
                         "form": form,
-                        "listing": listing,
+                        "listing": listing_object,
                         "checkbox": checkbox,
+                        "commentform": commentform,
                         "max_bid": max_bid
 
                     })
             
-    if request.GET.get('close') == 'close':
-        bid = Bid.objects.all().filter(title=title, price=max_bid).first()
-        max_bid_user = bid.user
+        if "close" in request.POST:
+            bid = Bid.objects.all().filter(title=title, price=max_bid).first()
+            max_bid_user = bid.user
 
-        listing.tag = 'closed'
-        listing.save()
+            listing_object.tag = 'closed'
+            listing_object.save()
 
-        if username == max_bid_user:
-            return render(request, "auctions/listing.html", {
-                "message": "Thank you for your entry into this auction. You have emerged the winner and this listing has been closed"
-            })
+            if username == max_bid_user:
+                return render(request, "auctions/listing.html", {
+                    "message": "Thank you for your entry into this auction. You have emerged the winner and this listing has been closed"
+                })
         
     return render(request, "auctions/listing.html", {
         "form": form,
-        "listing": listing,
+        "listing": listing_object,
         "checkbox": checkbox,
+        "commentform": commentform,
         "max_bid": max_bid,
-        "user": user
+        "users": user
     })
 
 
