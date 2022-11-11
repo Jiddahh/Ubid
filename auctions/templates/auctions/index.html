@@ -1,7 +1,26 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
     <h2>Active Listings</h2>
 
-    TODO
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+    
+    {% for active_listing in active_listings %}
+    <div class="active_listing">
+        <div class="active_listing_img">
+            <a href="auctions/{{ active_listing.title }}"><img src="{{ active_listing.image }}" alt="Listing image"></a>
+        </div>
+        <div class="active_listing_body">
+            <a href="auctions/{{ active_listing.title }}">
+                <h5>{{ active_listing.title }}</h5>
+            </a>
+            <h6>Price: ${{ active_listing.price }}</h6> 
+            <p>{{ active_listing.description }}</p>
+            <p>Created: {{ active_listing.date_time }}</p>
+        </div>
+    </div>
+    {% endfor %}
 {% endblock %}

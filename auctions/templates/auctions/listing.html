@@ -1,0 +1,49 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Listing: {{ listing.title }}</h2>
+    
+    {% if user.is_authenticated %}
+        {% if user.username == "{{ user }}" %}
+            <form action="listing" method="GET">
+                <input class="btn btn-primary" type="submit" value="Close Listing" name="close">
+            </form>
+        {% endif %}
+    {% endif %}
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <div class="listing">
+        <div class="listing_img">
+            <img src="{{ listing.image }}" alt="Listing image">
+        </div>
+        <div class="listing_body">
+            <p>{{ listing.description }}</p>
+            <h4>Price: ${{ listing.price }}</h4>
+            <form action="#" method="POST">
+                {% csrf_token %}
+                {{ checkbox }}
+            </form>
+        </div>
+    </div>
+
+    <div class="max_bid">
+        <p>Highest bid: ${{ max_bid }}</p>
+    </div>
+
+    <form action="#" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Place Bid">
+    </form>
+
+    <div>
+        <h5>Details</h5>
+        <ul>
+            <li><p>Listed by: <a href="#">{{ listing.user }}</a></p></li>
+            <li><p>Created: {{ listing.date_time }}</p></li>
+        </ul>
+    </div>
+{% endblock %}
