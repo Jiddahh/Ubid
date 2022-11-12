@@ -104,12 +104,14 @@ def listing(request, title):
     # title = request.GET.get('title', '')
     listing_object = Listing.objects.all().filter(title=title).first()
     user = listing_object.user
+    
+    user_id = request.user.id
 
     if request.user.is_authenticated:
         username = request.user.get_username()
     
     bids = Bid.objects.all().filter(title=title).values_list("price", flat=True)
-    max_bid = max(bids)
+    max_bid = max(bids, default=0)
     
 
     if request.method == "POST":
@@ -118,13 +120,13 @@ def listing(request, title):
         bidform = BidForm(request.POST, request.FILES, instance=bid)
         
         if watchlist.is_valid():
-            if "watchlist" in request.POST:
-                watchlist_data = Watchlists.objects.all().filter(title=title, user=username).first()
+            watchlist_data = Watchlists.objects.all().filter(title=title, user=user_id).first()
 
-                if watchlist_data:
-                    watchlist_data.delete()
-                else:
-                    true_wtchlist = Watchlists.objects.create(title=title, user=username)
+            if 'watchlist' in request.POST:
+                if not watchlist_data:
+                    wtchlisted = Watchlists.objects.create(title=title, user=user_id)
+            if watchlist_data:
+                watchlist_data.delete()
 
         if bidform.is_valid():
             price = bid.price

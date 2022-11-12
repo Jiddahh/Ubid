@@ -47,7 +47,7 @@ class Comments(models.Model):
 class Watchlists(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist", null=True)
     title = models.CharField(max_length=64)
-    watchlist = models.BooleanField(default=False)
+    watchlist = models.BooleanField(default=False, blank=False)
 
     def __str__(self):
         return f"{self.title}, {self.user}, {self.watchlist}"
