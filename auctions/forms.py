@@ -1,6 +1,7 @@
 from dataclasses import field
 from django.forms import ModelForm
 from .models import *
+from django import forms
 
 # from django import forms
 
@@ -14,14 +15,13 @@ class BidForm(ModelForm):
         model = Bid
         fields = ['price']
 
-class CheckForm(ModelForm):
-    watchlist = models.BooleanField()
-
-    class Meta:
-        model = Watchlists
-        exclude = ['title', 'user']
+# class CheckForm(ModelForm):
+#     # watchlist = forms.DecimalField(widget=forms.CheckboxInput(attrs={"value":"watchlist"}))
+#     class Meta:
+#         model = Watchlists
+#         fields = ['watchlist']
 
 class CommentForm(ModelForm):
     class Meta:
-        model = Comments
+        model = Comment
         fields = ['comment']

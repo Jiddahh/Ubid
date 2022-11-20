@@ -4,3 +4,11 @@ body {
 img{
     width: 15vw;
 }
+.user-time-wrap{
+    width: 15vw;
+
+}
+.user-time{
+    display: flex;
+    justify-content: space-between;
+}

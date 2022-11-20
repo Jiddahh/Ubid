@@ -1,6 +1,15 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <h2>Listing: {{ listing.title }}</h2>
     
     {% if user.username == users %}
@@ -10,21 +19,31 @@
         </form>
     {% endif %}
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
 
     <div class="listing">
         <div class="listing_img">
             <img src="{{ listing.image }}" alt="Listing image">
         </div>
         <div class="listing_body">
-            <p>{{ listing.description }}</p>
+
+            <div class="desc-category">
+                <p>{{ listing.description }}</p>
+                <p class="category">Category: {{ listing.category }}</p>
+            </div>
+
             <h4>Price: ${{ listing.price }}</h4>
-            <form action="#" method="POST">
-                {% csrf_token %}
-                {{ checkbox }}
-            </form>
+            
+            {% if watchlist_data.watchlist == True %}
+                <form action="{% url 'listing' listing.title %}" method="POST">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="Remove from watchlist" name="watchlist">
+                </form>
+            {% else %}
+                <form action="{% url 'listing' listing.title %}" method="POST">
+                    {% csrf_token %}
+                    <input class="btn btn-primary" type="submit" value="Add to watchlist" name="watchlist">
+                </form>
+            {% endif %}
         </div>
     </div>
 
@@ -46,9 +65,24 @@
         </ul>
     </div>
 
-    <form action="#" method="POST">
+    <form action="{% url 'listing' listing.title %}" method="POST">
         {% csrf_token %}
         {{ commentform }}
         <input type="submit" value="Comment">
     </form>
+
+    <h6>Comments</h6>
+    <div>
+        {% for comment in comments %}
+        <div class="user-time-wrap">
+            <div class="user-time">
+                <p>{{ comment.user_commented }}</p>
+                <p>{{ comment.date_time }}</p>
+            </div>
+        </div>
+        <p>{{ comment.comment }}</p>
+        <hr>
+        {% endfor %}
+    </div>
+
 {% endblock %}

@@ -19,7 +19,7 @@ class Listing(models.Model):
 ]
     title = models.CharField(max_length=64)
     description = models.TextField(max_length=64,blank=True)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=5,decimal_places=2)
     image = models.URLField(max_length=250)
     category = models.CharField(max_length=20,blank=True,choices=CATEGORY_CHOICES,default='fashion')
     tag = models.CharField(max_length=10, default='active')
@@ -38,16 +38,20 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.title}, {self.price} bid by {self.user}"
 
-class Comments(models.Model):
-    comment = models.TextField(max_length=250)
+class Comment(models.Model):
+    comment = models.TextField(max_length=64,blank=True)
     user_commented = models.CharField(max_length=64)
-    listing = models.CharField(max_length=64)
-    user_listing = models.CharField(max_length=64)
+    list_title = models.CharField(max_length=64)
+    list_author = models.CharField(max_length=64)
+    date_time = models.DateTimeField(default=timezone.now, blank=True)
+
+    def __str__(self):
+        return f"{self.user_commented}, {self.date_time}, {self.comment}"
 
 class Watchlists(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="watchlist", null=True)
-    title = models.CharField(max_length=64)
-    watchlist = models.BooleanField(default=False, blank=False)
+    user = models.CharField(max_length=64, default='user')
+    title = models.CharField(max_length=64, blank=True)
+    watchlist = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.title}, {self.user}, {self.watchlist}"
